@@ -1,0 +1,6 @@
+Model,PSet,Fold,Spearman,Pearson,n_estimators,max_depth,min_samples_split,min_samples_leaf,max_features
+Random Forest,,1,0.44140435462049227,0.5464408142464638,100,20,5,1,log2
+Random Forest,,2,0.43563239500489614,0.3881190771688233,50,,2,2,sqrt
+Random Forest,,3,0.4798294923660282,0.5257579329349947,100,20,2,1,sqrt
+Random Forest,,4,0.522691474084379,0.5336681001715516,150,,5,2,log2
+Random Forest,,5,0.5292067470320231,0.6105241170032986,200,20,2,1,sqrt
