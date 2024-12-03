@@ -8,3 +8,4 @@ dependencies:
   - ipykernel
   - xgboost
   - warnings
+  - scikit-learn
