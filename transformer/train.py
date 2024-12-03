@@ -5,12 +5,6 @@ import numpy as np
 from sklearn.metrics import mean_squared_error, r2_score
 from scipy.stats import spearmanr
 
-import torch
-from torch.utils.data import DataLoader
-import torch.nn as nn
-from sklearn.metrics import mean_squared_error, r2_score
-from scipy.stats import spearmanr
-
 def train_model(model, train_dataset, val_dataset, device, epochs=10, batch_size=32, lr=1e-4):
     model.to(device)
     train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)

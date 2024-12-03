@@ -1,3 +1,4 @@
+import torch
 from process import load_data, create_datasets
 from model import TransformerForRegression
 from train import train_model
