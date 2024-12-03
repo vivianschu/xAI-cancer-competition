@@ -1,0 +1,11 @@
+# config.yaml
+project_name: "vivian-xai-comp"
+experiment_name: "init"
+
+hyperparameters:
+  batch_size: 4
+  learning_rate: 0.0001
+  epochs: 20
+
+wandb:
+  log: true

@@ -21,16 +21,27 @@ def create_datasets(X_train, X_val, y_train, y_val, device):
     return train_dataset, val_dataset
 
 def load_data(train_df_path, train_targets_path):
-    X = pd.read_csv(train_df_path)
-    y = pd.read_csv(train_targets_path)['AAC']
+    X = pd.read_csv(train_df_path, index_col=0)
+    y = pd.read_csv(train_targets_path)
+    
+    y = y.set_index('sample').loc[X.index]['AAC']  # align on index and select 'AAC' column
 
     scaler = StandardScaler()
-    X_scaled = scaler.fit_transform(X)
+    X_scaled = scaler.fit_transform(X.values) 
+    X_scaled = pd.DataFrame(X_scaled, index=X.index, columns=X.columns) 
 
+    # train-validation split
     X_train, X_val, y_train, y_val = train_test_split(X_scaled, y, test_size=0.2, random_state=42)
-    return X_train, X_val, y_train, y_val
+
+    return X_train.values, X_val.values, y_train, y_val
+
+def create_datasets(X_train, X_val, y_train, y_val, device):
+    train_dataset = RNASeqDataset(X_train, y_train, device)
+    val_dataset = RNASeqDataset(X_val, y_val, device)
+    return train_dataset, val_dataset
 
 def load_test_data(test_df_path, scaler):
-    X_test = pd.read_csv(test_df_path)
-    X_test_scaled = scaler.transform(X_test)  # Use the same scaler from training
+    # load and scale test data
+    X_test = pd.read_csv(test_df_path, index_col=0)  # ensure sample names are the index
+    X_test_scaled = scaler.transform(X_test)
     return torch.tensor(X_test_scaled, dtype=torch.float32)
