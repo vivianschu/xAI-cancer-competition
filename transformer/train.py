@@ -1,9 +1,10 @@
-import wandb
-from sklearn.metrics import mean_squared_error, r2_score
-from scipy.stats import spearmanr
 import torch
-from torch.utils.data import DataLoader
+import wandb
+import numpy as np
 import torch.nn as nn
+from scipy.stats import spearmanr
+from torch.utils.data import DataLoader
+from sklearn.metrics import mean_squared_error, r2_score
 
 def train_model(model, train_dataset, val_dataset, device, epochs=10, batch_size=32, lr=1e-4):
     model.to(device)
@@ -71,3 +72,17 @@ def train_model(model, train_dataset, val_dataset, device, epochs=10, batch_size
         print(f"  Validation Spearman's Rank Correlation: {spearman_corr:.4f}")
 
     return model
+
+def predict_on_test(model, test_dataset, device, batch_size=32):
+    model.to(device)
+    test_loader = DataLoader(test_dataset, batch_size=batch_size, shuffle=False)
+    model.eval()
+    predictions = []
+
+    with torch.no_grad():
+        for batch in test_loader:
+            input_ids = batch.to(device)
+            outputs = model(input_ids)
+            predictions.extend(outputs.cpu().squeeze().numpy())
+
+    return predictions

@@ -10,7 +10,7 @@ base = "/home/vivian.chu/vivian-sandbox/other/xAI-cancer-competition/.data"
 
 def main():
     # File paths
-    train_df_path = f"{base}/train_subset.csv"
+    train_df_path = f"{base}/train.csv"
     train_targets_path = f"{base}/train_targets.csv"
     test_df_path = f"{base}/test.csv"
 
