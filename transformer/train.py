@@ -1,9 +1,9 @@
+import wandb
+from sklearn.metrics import mean_squared_error, r2_score
+from scipy.stats import spearmanr
 import torch
 from torch.utils.data import DataLoader
 import torch.nn as nn
-import numpy as np
-from sklearn.metrics import mean_squared_error, r2_score
-from scipy.stats import spearmanr
 
 def train_model(model, train_dataset, val_dataset, device, epochs=10, batch_size=32, lr=1e-4):
     model.to(device)
@@ -12,6 +12,9 @@ def train_model(model, train_dataset, val_dataset, device, epochs=10, batch_size
 
     criterion = nn.MSELoss()
     optimizer = torch.optim.AdamW(model.parameters(), lr=lr)
+
+    # Initialize W&B
+    wandb.watch(model, log="all", log_freq=10)
 
     for epoch in range(epochs):
         model.train()
@@ -50,6 +53,16 @@ def train_model(model, train_dataset, val_dataset, device, epochs=10, batch_size
         r2 = r2_score(true_vals, preds)
         spearman_corr, _ = spearmanr(true_vals, preds)
 
+        # Log metrics to W&B
+        wandb.log({
+            "epoch": epoch + 1,
+            "train_loss": train_loss,
+            "val_loss": val_loss,
+            "val_mse": mse,
+            "val_r2": r2,
+            "val_spearman_corr": spearman_corr
+        })
+
         print(f"Epoch {epoch + 1}/{epochs}")
         print(f"  Train Loss: {train_loss:.4f}")
         print(f"  Validation Loss: {val_loss:.4f}")
@@ -58,17 +71,3 @@ def train_model(model, train_dataset, val_dataset, device, epochs=10, batch_size
         print(f"  Validation Spearman's Rank Correlation: {spearman_corr:.4f}")
 
     return model
-
-def predict_on_test(model, test_dataset, device, batch_size=32):
-    model.to(device)
-    test_loader = DataLoader(test_dataset, batch_size=batch_size, shuffle=False)
-    model.eval()
-    predictions = []
-
-    with torch.no_grad():
-        for batch in test_loader:
-            input_ids = batch.to(device)
-            outputs = model(input_ids)
-            predictions.extend(outputs.cpu().squeeze().numpy())
-
-    return predictions
