@@ -5,10 +5,14 @@ import numpy as np
 from sklearn.metrics import mean_squared_error, r2_score
 from scipy.stats import spearmanr
 
-def train_model(model, train_dataset, val_dataset, epochs=10, batch_size=32, lr=1e-4):
-    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-    model.to(device)
+import torch
+from torch.utils.data import DataLoader
+import torch.nn as nn
+from sklearn.metrics import mean_squared_error, r2_score
+from scipy.stats import spearmanr
 
+def train_model(model, train_dataset, val_dataset, device, epochs=10, batch_size=32, lr=1e-4):
+    model.to(device)
     train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
     val_loader = DataLoader(val_dataset, batch_size=batch_size, shuffle=False)
 
@@ -21,8 +25,8 @@ def train_model(model, train_dataset, val_dataset, epochs=10, batch_size=32, lr=
 
         for batch in train_loader:
             optimizer.zero_grad()
-            input_ids = batch['input_ids'].to(device)
-            labels = batch['labels'].to(device)
+            input_ids = batch['input_ids']
+            labels = batch['labels']
             outputs = model(input_ids)
             loss = criterion(outputs.squeeze(), labels)
             loss.backward()
@@ -39,8 +43,8 @@ def train_model(model, train_dataset, val_dataset, epochs=10, batch_size=32, lr=
 
         with torch.no_grad():
             for batch in val_loader:
-                input_ids = batch['input_ids'].to(device)
-                labels = batch['labels'].to(device)
+                input_ids = batch['input_ids']
+                labels = batch['labels']
                 outputs = model(input_ids)
                 loss = criterion(outputs.squeeze(), labels)
                 val_loss += loss.item()
@@ -61,17 +65,15 @@ def train_model(model, train_dataset, val_dataset, epochs=10, batch_size=32, lr=
 
     return model
 
-def predict_on_test(model, test_dataset, batch_size=32):
-    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+def predict_on_test(model, test_dataset, device, batch_size=32):
     model.to(device)
-
     test_loader = DataLoader(test_dataset, batch_size=batch_size, shuffle=False)
     model.eval()
     predictions = []
 
     with torch.no_grad():
         for batch in test_loader:
-            input_ids = batch['input_ids'].to(device)
+            input_ids = batch.to(device)
             outputs = model(input_ids)
             predictions.extend(outputs.cpu().squeeze().numpy())
 
