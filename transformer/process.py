@@ -29,3 +29,8 @@ def create_datasets(X_train, X_val, y_train, y_val):
     train_dataset = RNASeqDataset(X_train, y_train)
     val_dataset = RNASeqDataset(X_val, y_val)
     return train_dataset, val_dataset
+
+def load_test_data(test_df_path, scaler):
+    X_test = pd.read_csv(test_df_path)
+    X_test_scaled = scaler.transform(X_test)  # Use the same scaler from training
+    return torch.tensor(X_test_scaled, dtype=torch.float32)
