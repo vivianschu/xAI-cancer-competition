@@ -1,0 +1,13 @@
+name: xai
+
+dependencies:
+  - python=3.10
+  - numpy
+  - pandas
+  - matplotlib
+  - ipykernel
+  - xgboost
+  - warnings
+  - scikit-learn
+  - transformers
+  - pytorch
