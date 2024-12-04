@@ -1,3 +1,4 @@
 .data
 transformer/__pycache__/
-trasnformer/wandb/
+transformer/wandb/
+*.pth

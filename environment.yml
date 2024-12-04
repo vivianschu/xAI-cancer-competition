@@ -2,10 +2,14 @@ name: xai
 
 dependencies:
   - python=3.10
-  - numpy
+  - numpy=2.0.0
   - pandas
   - matplotlib
   - ipykernel
   - xgboost
   - warnings
   - scikit-learn
+  - scanpy
+  - pytorch
+  - wandb
+  - transformers
