@@ -13,3 +13,6 @@ dependencies:
   - pytorch
   - wandb
   - transformers
+  - pip
+  - pip:
+    - tabpfn
